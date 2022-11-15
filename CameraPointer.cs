@@ -18,7 +18,8 @@
 
 using System.Collections;
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 using Random = System.Random;
 
 /// <summary>
@@ -38,8 +39,6 @@ public class CameraPointer : MonoBehaviour
     public void Start()
     {
         process = new Process();
-        Generator generator = new Generator();
-        Debug.Log("random random random" + generator.GetRandomTable());
     }
 
     public void Update()
@@ -114,6 +113,7 @@ public class Process
     private ArrayList _plate;
     private int _tableToServe;
     private string[] _foods;
+    private int _status;
 
     public void DistributeFood()
     {
@@ -121,25 +121,11 @@ public class Process
         _tables[_tableToServe] = _generator.GetRandomFoods();
     }
 
-    public ArrayList ReadTable()
-    {
-        return _tables[_tableToServe];
-    }
-
-    public ArrayList ReadPlate()
-    {
-        return _plate;
-    }
-
-    public void ClearPlate()
-    {
-        _plate.Clear();
-    }
     public Process()
     {
         _foods = new[]
         {
-            "Lamb_chop", "Salami", "Lamb_leg", "HotDog", "Candy_cane", "Pretzel",
+            "Lamb_chop", "Salami", "Lamb_leg", "HotDog", "Frappe", "Pretzel",
             "Soda_can", "Cake", "Doughnut", "Pizza",
         };
         _generator = new Generator();
@@ -150,8 +136,24 @@ public class Process
         }
         _plate = new ArrayList();
         DistributeFood();
+        _status = 0;
     }
 
+    public ArrayList GetTable()
+    {
+        return _tables[_tableToServe];
+    }
+
+    public ArrayList GetPlate()
+    {
+        return _plate;
+    }
+
+    public void ClearPlate()
+    {
+        _plate.Clear();
+    }
+    
     public string[] GetFoods()
     {
         return _foods;
@@ -162,28 +164,38 @@ public class Process
         _plate.Add(foodIndex);
     }
 
-    // public string FormComboString()
-    // {
-    //     var foodCount = new Dictionary<int, int>();
-    //     foreach (int x in _plate)
-    //     {
-    //         if (foodCount.ContainsKey(x))
-    //         {
-    //             foodCount[x]++;
-    //         }
-    //         else
-    //         {
-    //             foodCount[x] = 1;
-    //         }
-    //     }
-    //     string comboString = "";
-    //     foreach (KeyValuePair<int, int> entry in foodCount)
-    //     {
-    //         comboString += $"{_foods[entry.Key]} x {entry.Value},";
-    //     }
-    //
-    //     return comboString.TrimEnd(',');
-    // }
+    public int GetStatus()
+    {
+        return _status;
+    }
+
+    public void SetStatus(int status)
+    {
+        _status = status;
+    }
+
+    public string FormComboString(ArrayList foods)
+    {
+        var foodCount = new Dictionary<int, int>();
+        foreach (int x in foods)
+        {
+            if (foodCount.ContainsKey(x))
+            {
+                foodCount[x]++;
+            }
+            else
+            {
+                foodCount[x] = 1;
+            }
+        }
+        string comboString = "";
+        foreach (KeyValuePair<int, int> entry in foodCount)
+        {
+            comboString += $"{_foods[entry.Key]} x {entry.Value},";
+        }
+    
+        return comboString.TrimEnd(',');
+    }
 
     public bool CompareAndServe()
     {

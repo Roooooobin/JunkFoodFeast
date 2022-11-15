@@ -24,7 +24,6 @@ using UnityEngine;
 /// </summary>
 public class ObjectController : MonoBehaviour
 {
-
     /// <summary>
     /// The material to use when this object is inactive (not being gazed at).
     /// </summary>
@@ -56,33 +55,6 @@ public class ObjectController : MonoBehaviour
         SetMaterial(false);
     }
 
-    /// <summary>
-    /// Teleports this instance randomly when triggered by a pointer click.
-    /// </summary>
-    //public void TeleportRandomly()
-    //{
-    //    // Picks a random sibling, activates it and deactivates itself.
-    //    int sibIdx = transform.GetSiblingIndex();
-    //    int numSibs = transform.parent.childCount;
-    //    sibIdx = (sibIdx + Random.Range(1, numSibs)) % numSibs;
-    //    GameObject randomSib = transform.parent.GetChild(sibIdx).gameObject;
-
-    //    // Computes new object's location.
-    //    float angle = Random.Range(-Mathf.PI, Mathf.PI);
-    //    float distance = Random.Range(_minObjectDistance, _maxObjectDistance);
-    //    float height = Random.Range(_minObjectHeight, _maxObjectHeight);
-    //    Vector3 newPos = new Vector3(Mathf.Cos(angle) * distance, height,
-    //                                 Mathf.Sin(angle) * distance);
-
-    //    // Moves the parent to the new position (siblings relative distance from their parent is 0).
-    //    transform.parent.localPosition = newPos;
-
-    //    randomSib.SetActive(true);
-    //    gameObject.SetActive(false);
-    //    SetMaterial(false);
-    //}
-
-
 
     /// <summary>
     /// This method is called by the Main Camera when it starts gazing at this GameObject.
@@ -108,7 +80,8 @@ public class ObjectController : MonoBehaviour
     {
         int foodIndex = transform.GetSiblingIndex();
         string clickedItemName = transform.parent.GetChild(foodIndex).name;
-        if (clickedItemName == "Cake")
+        // click cash register, check the order
+        if (clickedItemName == "Check")
         {
             ClickCheckButton();
         }
@@ -122,23 +95,10 @@ public class ObjectController : MonoBehaviour
     private void ClickNormalFood(int foodIndex)
     {
         var process = CameraPointer.process;
-        var foods = process.GetFoods();
         process.AddFood(foodIndex);
-        string foodOnTable = "";
-        foreach (int i in process.ReadTable())
-        {
-            foodOnTable += foods[i];
-        }
-        Debug.Log(foodOnTable);
-        string foodOnPlate = "";
-        foreach (int i in process.ReadPlate())
-        {
-            foodOnPlate += foods[i];
-        }
-        Debug.Log(foodOnPlate);
     }
 
-    // click button to 
+    // click cash register to check if the order is correct
     private void ClickCheckButton()
     {
         var process = CameraPointer.process;
@@ -146,21 +106,17 @@ public class ObjectController : MonoBehaviour
         // the order is right, continue to the next one
         if (process.CompareAndServe())
         {
-            Debug.Log("Congrats, you have prepared the wrong order, continue the next one!");
             process.ClearPlate();
             process.DistributeFood();
+            // set status to succeeded
+            process.SetStatus(1); // TODO: do not use magic number
         }
         else
         {
             // clear the plate and try again
             process.ClearPlate();
-            string foodOnPlate = "";
-            foreach (int i in process.ReadPlate())
-            {
-                foodOnPlate += foods[i];
-            }
-            Debug.Log(foodOnPlate);
-            Debug.Log("You have prepared the wrong order, please try again");
+            // set status to failed
+            process.SetStatus(-1); // TODO: do not use magic number
         }
     }
 
