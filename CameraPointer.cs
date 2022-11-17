@@ -114,6 +114,11 @@ public class Process
     private int _tableToServe;
     private string[] _foods;
     private int _status;
+    
+    public int StatusWaitToStart = 0;
+    public int StatusSucceed = 1;
+    public int StatusFail = 2;
+    public int StatusInProcess = 3;
 
     public void DistributeFood()
     {
@@ -136,7 +141,7 @@ public class Process
         }
         _plate = new ArrayList();
         DistributeFood();
-        _status = 0;
+        _status = StatusWaitToStart;
     }
 
     public ArrayList GetTable()

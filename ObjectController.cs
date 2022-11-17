@@ -16,7 +16,6 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -102,6 +101,12 @@ public class ObjectController : MonoBehaviour
     private void ClickCheckButton()
     {
         var process = CameraPointer.process;
+        int status = process.GetStatus();
+        if (status != process.StatusInProcess)
+        {
+            process.SetStatus(process.StatusInProcess);
+            return;
+        }
         var foods = process.GetFoods();
         // the order is right, continue to the next one
         if (process.CompareAndServe())
@@ -109,14 +114,14 @@ public class ObjectController : MonoBehaviour
             process.ClearPlate();
             process.DistributeFood();
             // set status to succeeded
-            process.SetStatus(1); // TODO: do not use magic number
+            process.SetStatus(process.StatusSucceed); // TODO: do not use magic number
         }
         else
         {
             // clear the plate and try again
             process.ClearPlate();
             // set status to failed
-            process.SetStatus(-1); // TODO: do not use magic number
+            process.SetStatus(process.StatusFail); // TODO: do not use magic number
         }
     }
 
