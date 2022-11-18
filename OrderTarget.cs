@@ -1,13 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class OrderTarget : MonoBehaviour
 {
-    [FormerlySerializedAs("orderInfo")] public TextMeshProUGUI orderTarget;
+    public TextMeshProUGUI orderTarget;
 
     // Start is called before the first frame update
     void Start()

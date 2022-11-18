@@ -19,7 +19,6 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using Random = System.Random;
 
 /// <summary>
@@ -28,7 +27,9 @@ using Random = System.Random;
 public class CameraPointer : MonoBehaviour
 {
     private const float _maxDistance = 100;
+
     private GameObject _gazedAtObject = null;
+
     // necessary preprocessing data structures
     public static Process process;
 
@@ -42,7 +43,7 @@ public class CameraPointer : MonoBehaviour
     }
 
     public void Update()
-    { 
+    {
         // Casts ray towards camera's forward direction, to detect if a GameObject is being gazed
         // at.
         RaycastHit hit;
@@ -69,8 +70,6 @@ public class CameraPointer : MonoBehaviour
         {
             _gazedAtObject?.SendMessage("OnPointerClick");
         }
-
-       
     }
 }
 
@@ -82,11 +81,13 @@ public class Generator
     private const int MaxComboNum = 5; // at most 5 foods in one combo
     private const int TableNum = 4;
     private const int FoodNum = 10;
+
     public Generator()
     {
         _tableRandom = new Random();
         _foodRandom = new Random();
     }
+
     public int GetRandomTable()
     {
         return _tableRandom.Next(0, TableNum);
@@ -101,20 +102,21 @@ public class Generator
         {
             pack.Add(_foodRandom.Next(0, FoodNum));
         }
+
         return pack;
     }
-
 }
 
 public class Process
 {
     private Generator _generator;
-    private ArrayList[] _tables;
+    private ArrayList _table;
     private ArrayList _plate;
-    private int _tableToServe;
     private string[] _foods;
     private int _status;
-    
+    private int _score;
+    private int _time;
+
     public int StatusWaitToStart = 0;
     public int StatusSucceed = 1;
     public int StatusFail = 2;
@@ -122,8 +124,7 @@ public class Process
 
     public void DistributeFood()
     {
-        _tableToServe = _generator.GetRandomTable();
-        _tables[_tableToServe] = _generator.GetRandomFoods();
+        _table = _generator.GetRandomFoods();
     }
 
     public Process()
@@ -134,19 +135,19 @@ public class Process
             "Soda_can", "Cake", "Doughnut", "Pizza",
         };
         _generator = new Generator();
-        _tables = new ArrayList[4];
-        for (int i = 0; i < _tables.Length; i++)
-        {
-            _tables[i] = new ArrayList();
-        }
+        _table = new ArrayList();
         _plate = new ArrayList();
         DistributeFood();
         _status = StatusWaitToStart;
+        // initial score is 0
+        _score = 0;
+        //
+        _time = 60;
     }
 
     public ArrayList GetTable()
     {
-        return _tables[_tableToServe];
+        return _table;
     }
 
     public ArrayList GetPlate()
@@ -158,7 +159,7 @@ public class Process
     {
         _plate.Clear();
     }
-    
+
     public string[] GetFoods()
     {
         return _foods;
@@ -179,6 +180,16 @@ public class Process
         _status = status;
     }
 
+    public int GetScore()
+    {
+        return _score;
+    }
+
+    public void UpdateScore()
+    {
+        _score++;
+    }
+
     public string FormComboString(ArrayList foods)
     {
         var foodCount = new Dictionary<int, int>();
@@ -193,27 +204,28 @@ public class Process
                 foodCount[x] = 1;
             }
         }
+
         string comboString = "";
         foreach (KeyValuePair<int, int> entry in foodCount)
         {
             comboString += $"{_foods[entry.Key]} x {entry.Value},";
         }
-    
+
         return comboString.TrimEnd(',');
     }
 
     public bool CompareAndServe()
     {
-        ArrayList serveTable = _tables[_tableToServe];
-        if (serveTable.Count != _plate.Count)
+        if (_table.Count != _plate.Count)
         {
             return false;
         }
-        serveTable.Sort();
+
+        _table.Sort();
         _plate.Sort();
-        for (int i = 0; i < serveTable.Count; i++)
+        for (int i = 0; i < _table.Count; i++)
         {
-            if (!serveTable[i].Equals(_plate[i]))
+            if (!_table[i].Equals(_plate[i]))
             {
                 return false;
             }

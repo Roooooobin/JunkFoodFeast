@@ -114,14 +114,16 @@ public class ObjectController : MonoBehaviour
             process.ClearPlate();
             process.DistributeFood();
             // set status to succeeded
-            process.SetStatus(process.StatusSucceed); // TODO: do not use magic number
+            process.SetStatus(process.StatusSucceed);
+            // add score
+            process.UpdateScore();
         }
         else
         {
             // clear the plate and try again
             process.ClearPlate();
             // set status to failed
-            process.SetStatus(process.StatusFail); // TODO: do not use magic number
+            process.SetStatus(process.StatusFail);
         }
     }
 

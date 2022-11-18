@@ -1,13 +1,10 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class OrderPreparation : MonoBehaviour
 {
-    [FormerlySerializedAs("orderInfo")] public TextMeshProUGUI orderPreparation;
-    
-    private string _orderPreparation;
-    
+    public TextMeshProUGUI orderPreparation;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +14,9 @@ public class OrderPreparation : MonoBehaviour
     void Update()
     {
         Process process = CameraPointer.process;
-        orderPreparation.text = "Your preparation is:" + process.FormComboString(process.GetPlate());
+        if (process != null)
+        {
+            orderPreparation.text = "Your preparation is:" + process.FormComboString(process.GetPlate());
+        }
     }
 }
