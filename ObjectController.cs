@@ -104,10 +104,15 @@ public class ObjectController : MonoBehaviour
         int status = process.GetStatus();
         if (status != process.StatusInProcess)
         {
+            // restart the game, reset countdown and score
+            if (status == process.StatusEndGame)
+            {
+                process.SetCountdown(process.CountDownTime);
+                process.ResetScore();
+            }
             process.SetStatus(process.StatusInProcess);
             return;
         }
-        var foods = process.GetFoods();
         // the order is right, continue to the next one
         if (process.CompareAndServe())
         {

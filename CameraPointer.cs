@@ -70,13 +70,26 @@ public class CameraPointer : MonoBehaviour
         {
             _gazedAtObject?.SendMessage("OnPointerClick");
         }
+
+        int currentStatus = process.GetStatus();
+        if (currentStatus != process.StatusWaitToStart && currentStatus != process.StatusEndGame)
+        {
+            float currentCountdown = process.GetCountdown();
+            float nextCountdown = currentCountdown - Time.deltaTime;
+            if (nextCountdown < 0)
+            {
+                nextCountdown = 0;
+                // when countdown is 0, end the game
+                process.SetStatus(process.StatusEndGame);
+            }
+            process.SetCountdown(nextCountdown);
+        }
     }
 }
 
 
 public class Generator
 {
-    private Random _tableRandom;
     private Random _foodRandom;
     private const int MaxComboNum = 5; // at most 5 foods in one combo
     private const int TableNum = 4;
@@ -84,13 +97,7 @@ public class Generator
 
     public Generator()
     {
-        _tableRandom = new Random();
         _foodRandom = new Random();
-    }
-
-    public int GetRandomTable()
-    {
-        return _tableRandom.Next(0, TableNum);
     }
 
     public ArrayList GetRandomFoods()
@@ -115,12 +122,20 @@ public class Process
     private string[] _foods;
     private int _status;
     private int _score;
-    private int _time;
+    private float _countdown;
 
+    // before starting the game
     public int StatusWaitToStart = 0;
+    // preparation success
     public int StatusSucceed = 1;
+    // preparation failure
     public int StatusFail = 2;
+    // preparing
     public int StatusInProcess = 3;
+    // countdown is 0, the game is ended
+    public int StatusEndGame = 4;
+    // countdown time
+    public int CountDownTime = 100;
 
     public void DistributeFood()
     {
@@ -141,8 +156,8 @@ public class Process
         _status = StatusWaitToStart;
         // initial score is 0
         _score = 0;
-        //
-        _time = 60;
+        // countdown time
+        _countdown = CountDownTime;
     }
 
     public ArrayList GetTable()
@@ -188,6 +203,21 @@ public class Process
     public void UpdateScore()
     {
         _score++;
+    }
+
+    public void ResetScore()
+    {
+        _score = 0;
+    }
+
+    public float GetCountdown()
+    {
+        return _countdown;
+    }
+
+    public void SetCountdown(float time)
+    {
+        _countdown = time;
     }
 
     public string FormComboString(ArrayList foods)

@@ -33,5 +33,15 @@ public class OrderTarget : MonoBehaviour
         {
             orderTarget.text = "Please click the cash register to start the game";
         }
+        else if (status == process.StatusEndGame)
+        {
+            orderTarget.text = "This round of the game is ended, click the cash register to start a new one";
+        }
+
+        if (status != process.StatusEndGame)
+        {
+            orderTarget.text += "\n" + "\n";
+            orderTarget.text += "Countdown: " + process.GetCountdown() + "s";
+        }
     }
 }
