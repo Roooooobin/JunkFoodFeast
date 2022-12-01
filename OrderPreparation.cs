@@ -17,7 +17,7 @@ public class OrderPreparation : MonoBehaviour
         if (process != null)
         {
             orderPreparation.text = "Your preparation is:" + process.FormComboString(process.GetPlate());
-            if (process.GetStatus() == process.StatusEndGame)
+            if (process.GetStatus() == process.statusEndGame)
             {
                 orderPreparation.text = "This round of the game is ended, click the cash register to start a new one";
             }

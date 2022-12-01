@@ -72,7 +72,7 @@ public class CameraPointer : MonoBehaviour
         }
 
         int currentStatus = process.GetStatus();
-        if (currentStatus != process.StatusWaitToStart && currentStatus != process.StatusEndGame)
+        if (currentStatus != process.statusWaitToStart && currentStatus != process.statusEndGame)
         {
             float currentCountdown = process.GetCountdown();
             float nextCountdown = currentCountdown - Time.deltaTime;
@@ -80,7 +80,7 @@ public class CameraPointer : MonoBehaviour
             {
                 nextCountdown = 0;
                 // when countdown is 0, end the game
-                process.SetStatus(process.StatusEndGame);
+                process.SetStatus(process.statusEndGame);
             }
             process.SetCountdown(nextCountdown);
         }
@@ -92,7 +92,6 @@ public class Generator
 {
     private Random _foodRandom;
     private const int MaxComboNum = 5; // at most 5 foods in one combo
-    private const int TableNum = 4;
     private const int FoodNum = 10;
 
     public Generator()
@@ -123,19 +122,20 @@ public class Process
     private int _status;
     private int _score;
     private float _countdown;
+    public float intervalBetweenTwoTasks;
 
     // before starting the game
-    public int StatusWaitToStart = 0;
+    public readonly int statusWaitToStart = 0;
     // preparation success
-    public int StatusSucceed = 1;
+    public readonly int statusSucceed = 1;
     // preparation failure
-    public int StatusFail = 2;
+    public readonly int statusFail = 2;
     // preparing
-    public int StatusInProcess = 3;
+    public readonly int statusInProcess = 3;
     // countdown is 0, the game is ended
-    public int StatusEndGame = 4;
+    public readonly int statusEndGame = 4;
     // countdown time
-    public int CountDownTime = 100;
+    public readonly int countDownTime = 100;
 
     public void DistributeFood()
     {
@@ -153,11 +153,12 @@ public class Process
         _table = new ArrayList();
         _plate = new ArrayList();
         DistributeFood();
-        _status = StatusWaitToStart;
+        _status = statusWaitToStart;
         // initial score is 0
         _score = 0;
         // countdown time
-        _countdown = CountDownTime;
+        _countdown = countDownTime;
+        intervalBetweenTwoTasks = 0;
     }
 
     public ArrayList GetTable()

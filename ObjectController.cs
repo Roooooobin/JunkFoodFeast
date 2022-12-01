@@ -102,15 +102,15 @@ public class ObjectController : MonoBehaviour
     {
         var process = CameraPointer.process;
         int status = process.GetStatus();
-        if (status != process.StatusInProcess)
+        if (status != process.statusInProcess)
         {
             // restart the game, reset countdown and score
-            if (status == process.StatusEndGame)
+            if (status == process.statusEndGame)
             {
-                process.SetCountdown(process.CountDownTime);
+                process.SetCountdown(process.countDownTime);
                 process.ResetScore();
             }
-            process.SetStatus(process.StatusInProcess);
+            process.SetStatus(process.statusInProcess);
             return;
         }
         // the order is right, continue to the next one
@@ -119,7 +119,7 @@ public class ObjectController : MonoBehaviour
             process.ClearPlate();
             process.DistributeFood();
             // set status to succeeded
-            process.SetStatus(process.StatusSucceed);
+            process.SetStatus(process.statusSucceed);
             // add score
             process.UpdateScore();
         }
@@ -128,7 +128,7 @@ public class ObjectController : MonoBehaviour
             // clear the plate and try again
             process.ClearPlate();
             // set status to failed
-            process.SetStatus(process.StatusFail);
+            process.SetStatus(process.statusFail);
         }
     }
 
