@@ -43,9 +43,11 @@ public class OrderTarget : MonoBehaviour
         }
         else if (status == process.statusEndGame)
         {
-            orderTarget.text = "This round of the game is ended, click the cash register to start a new one";
+            orderTarget.text = "Congrats, you got " + process.GetScore() + " point(s)\n";
+            orderTarget.text += "This round of the game is ended, click the cash register to start a new one";
         }
 
+        // show countdown left if the game is not ended
         if (status != process.statusEndGame)
         {
             orderTarget.text += "\n" + "\n";

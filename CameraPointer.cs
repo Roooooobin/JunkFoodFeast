@@ -135,7 +135,7 @@ public class Process
     // countdown is 0, the game is ended
     public readonly int statusEndGame = 4;
     // countdown time
-    public readonly int countDownTime = 100;
+    public readonly int countDownTime = 60;
 
     public void DistributeFood()
     {
